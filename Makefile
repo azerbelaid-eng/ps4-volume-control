@@ -1,5 +1,7 @@
 # Makefile for ps4_volume_control GoldHEN Plugin
 
+.DEFAULT_GOAL := all
+
 TARGET       := ps4_volume_control
 TARGET_ELF   := $(TARGET).elf
 TARGET_PRX   := $(TARGET).prx
@@ -29,6 +31,8 @@ LDFLAGS      := -m elf_x86_64 -pie --script $(TOOLCHAIN)/link.x -e _init --eh-fr
 CFILES       := $(wildcard $(PROJDIR)/*.c)
 OBJS         := $(patsubst $(PROJDIR)/%.c, $(INTDIR)/%.o, $(CFILES))
 
+all: $(TARGET_PRX)
+
 $(INTDIR):
 	mkdir -p $(INTDIR)
 
@@ -39,10 +43,7 @@ $(TARGET_PRX): $(INTDIR) $(OBJS)
 	$(LD) $(GH_SDK)/build/crtprx.o $(OBJS) -o $(TARGET_ELF) $(LDFLAGS)
 	$(TOOLCHAIN)/bin/linux/create-fself -in=$(TARGET_ELF) -out=$(TARGET).oelf --lib=$(TARGET_PRX) --paid 0x3800000000000011
 
-all: $(TARGET_PRX)
-
 clean:
 	rm -rf $(INTDIR) $(TARGET_ELF) $(TARGET).oelf $(TARGET_PRX)
 
 .PHONY: all clean
-
