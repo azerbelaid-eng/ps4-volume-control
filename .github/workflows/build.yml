@@ -36,8 +36,12 @@ jobs:
 
       - name: Build ps4_volume_control.prx
         run: |
-          make all
-          ls -la
+          make all 2>&1 | tee build.log || {
+            while IFS= read -r line; do
+              echo "::error::$line"
+            done < build.log
+            exit 1
+          }
 
       - name: Upload compiled PRX
         uses: actions/upload-artifact@v4
