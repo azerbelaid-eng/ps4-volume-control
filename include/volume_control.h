@@ -85,3 +85,13 @@ typedef struct {
     int32_t reserved[4];
 } OrbisNotificationRequest;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+int sceKernelSendNotificationRequest(int device, const void *req, size_t size, int blocking);
+uint64_t sceKernelGetProcessTime(void);
+
+#ifdef __cplusplus
+}
+#endif

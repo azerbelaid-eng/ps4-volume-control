@@ -14,8 +14,9 @@ PROJDIR      := source
 INCLUDEDIR   := include
 INTDIR       := build
 
-# Libraries linked into the PRX
-LIBS         := -lSceLibcInternal -lGoldHEN_Hook -lkernel -lSceSysmodule -lScePad -lSceAudioOut
+# Standard libraries linked into the PRX
+# (Audio and Pad are resolved dynamically at runtime via sys_dynlib_dlsym)
+LIBS         := -lSceLibcInternal -lGoldHEN_Hook -lkernel -lSceSysmodule
 
 # Compiler & flags
 CC           := clang
@@ -23,7 +24,7 @@ LD           := ld.lld
 
 CFLAGS       := --target=x86_64-pc-freebsd12-elf -fPIC -funwind-tables -Wall -O2 \
                 -isysroot $(TOOLCHAIN) -isystem $(TOOLCHAIN)/include \
-                -I$(GH_SDK)/include -I$(INCLUDEDIR)
+                -I$(GH_SDK)/include -I$(TOOLCHAIN)/include/GoldHEN -I$(INCLUDEDIR)
 
 LDFLAGS      := -m elf_x86_64 -pie --script $(TOOLCHAIN)/link.x -e _init --eh-frame-hdr \
                 -L$(TOOLCHAIN)/lib -L$(GH_SDK) $(LIBS)

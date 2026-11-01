@@ -31,6 +31,7 @@ jobs:
           git clone --depth 1 https://github.com/GoldHEN/GoldHEN_Plugins_SDK.git /tmp/GoldHEN_SDK
           cd /tmp/GoldHEN_SDK
           make
+          make install || true
           echo "GOLDHEN_SDK=/tmp/GoldHEN_SDK" >> $GITHUB_ENV
 
       - name: Build ps4_volume_control.prx
