@@ -37,12 +37,11 @@ jobs:
       - name: Build ps4_volume_control.prx
         run: |
           make all
+          ls -lh ps4_volume_control.prx
 
       - name: Upload compiled PRX
         uses: actions/upload-artifact@v4
         with:
           name: ps4_volume_control
-          path: |
-            ps4_volume_control.prx
-            **/*.prx
+          path: ps4_volume_control.prx
           if-no-files-found: error

@@ -3,6 +3,11 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include <orbis/libkernel.h>
+#include <orbis/_types/kernel.h>
+
+#define attr_public         __attribute__((visibility("default")))
+#define attr_module_hidden  __attribute__((weak)) __attribute__((visibility("hidden")))
 
 #define PLUGIN_NAME    "ps4_volume_control"
 #define PLUGIN_DESC    "System HDMI Volume Control with DualShock 4"
@@ -65,33 +70,3 @@ typedef struct {
     int32_t handle;
     const void *ptr;
 } OrbisAudioOutOutputParam;
-
-typedef struct {
-    int32_t type;
-    int32_t reqId;
-    int32_t priority;
-    int32_t msgId;
-    int32_t targetId;
-    int32_t userId;
-    int32_t unk1;
-    int32_t unk2;
-    int32_t appId;
-    int32_t errorNum;
-    int32_t unk3;
-    uint8_t useIconImageUri;
-    char message[1024];
-    char iconUri[1024];
-    char packageDigest[32];
-    int32_t reserved[4];
-} OrbisNotificationRequest;
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-int sceKernelSendNotificationRequest(int device, const void *req, size_t size, int blocking);
-uint64_t sceKernelGetProcessTime(void);
-
-#ifdef __cplusplus
-}
-#endif
