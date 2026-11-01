@@ -1,0 +1,36 @@
+name: Build PS4 Volume Control Plugin
+
+on:
+  push:
+    branches: [ "**" ]
+  pull_request:
+    branches: [ "**" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/openorbis/toolchain:latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Clone GoldHEN Plugins SDK
+        run: |
+          git clone --depth 1 https://github.com/GoldHEN/GoldHEN_Plugins_SDK.git /tmp/GoldHEN_SDK
+          cd /tmp/GoldHEN_SDK
+          make
+
+      - name: Build ps4_volume_control.prx
+        run: |
+          export GOLDHEN_SDK=/tmp/GoldHEN_SDK
+          make
+
+      - name: Upload compiled PRX
+        uses: actions/upload-artifact@v4
+        with:
+          name: ps4_volume_control
+          path: ps4_volume_control.prx
+
