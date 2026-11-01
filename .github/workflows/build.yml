@@ -36,16 +36,15 @@ jobs:
 
       - name: Build ps4_volume_control.prx
         run: |
-          make all 2>&1 | tee build.log || {
-            while IFS= read -r line; do
-              echo "::error::$line"
-            done < build.log
-            exit 1
-          }
+          make all 2>&1 | tee build.log
+          echo "::error::LOG: $(cat build.log | tr '\n' ' ')"
+          echo "::error::FILES: $(find . -maxdepth 2 | tr '\n' ' ')"
 
       - name: Upload compiled PRX
         uses: actions/upload-artifact@v4
         with:
           name: ps4_volume_control
-          path: ps4_volume_control.prx
+          path: |
+            ps4_volume_control.prx
+            **/*.prx
           if-no-files-found: error
