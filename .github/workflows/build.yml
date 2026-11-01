@@ -9,23 +9,32 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/openorbis/toolchain:latest
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Clone GoldHEN Plugins SDK
+      - name: Install Build Tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y llvm lld clang curl tar make
+
+      - name: Download OpenOrbis Toolchain
+        run: |
+          curl -sL https://github.com/illusion0001/OpenOrbis-PS4-Toolchain/releases/latest/download/toolchain.tar.gz | tar xz -C ./
+          echo "OO_PS4_TOOLCHAIN=$GITHUB_WORKSPACE/OpenOrbis/PS4Toolchain" >> $GITHUB_ENV
+          chmod +x $GITHUB_WORKSPACE/OpenOrbis/PS4Toolchain/bin/linux/* || true
+
+      - name: Clone and Setup GoldHEN Plugins SDK
         run: |
           git clone --depth 1 https://github.com/GoldHEN/GoldHEN_Plugins_SDK.git /tmp/GoldHEN_SDK
           cd /tmp/GoldHEN_SDK
           make
+          echo "GOLDHEN_SDK=/tmp/GoldHEN_SDK" >> $GITHUB_ENV
 
       - name: Build ps4_volume_control.prx
         run: |
-          export GOLDHEN_SDK=/tmp/GoldHEN_SDK
           make
 
       - name: Upload compiled PRX
@@ -33,4 +42,4 @@ jobs:
         with:
           name: ps4_volume_control
           path: ps4_volume_control.prx
-
+          if-no-files-found: error
